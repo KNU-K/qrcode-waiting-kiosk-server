@@ -1,8 +1,4 @@
-module.exports = {
-  errHandler: (err, req, res, next) => {
-    if (err instanceof Error) {
-    } else {
-    }
-    res.send(err);
-  },
+const ErrorHandler = (err, req, res, next) => {
+  res.json({ msg: "fail" });
 };
+module.exports = { ErrorHandler };
