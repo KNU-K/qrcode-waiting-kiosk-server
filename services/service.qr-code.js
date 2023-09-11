@@ -1,9 +1,8 @@
-const { text } = require("express");
 const qr = require("qrcode");
 class ServiceQRCode {
   static generateQRCode(token) {
     return new Promise((resolve, reject) => {
-      const respondText = `api/${token}`;
+      const respondText = `${token}`;
       qr.toDataURL(respondText, (err, data_url) => {
         if (err) {
           console.log(err);
