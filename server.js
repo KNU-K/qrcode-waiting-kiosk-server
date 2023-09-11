@@ -6,7 +6,8 @@ const { client } = require("./config/redis");
 const session = require("express-session");
 const passport = require("passport");
 const port = process.env.PORT | 8000;
-
+const cors = require("cors");
+app.use(cors());
 app.use(
   session({
     secret: "secret",
@@ -21,6 +22,8 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", routers);
+
+app.use(errHandelr);
 
 app.listen(port, async () => {
   try {
