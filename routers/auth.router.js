@@ -4,7 +4,7 @@ const { ServiceQRCode } = require("../services/service.qr-code");
 
 const router = require("express").Router();
 // TODO: plan implementation
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res, next) => {
   try {
     const { productName, productPrice } = req.body;
     const payload = {
@@ -17,11 +17,11 @@ router.post("/register", async (req, res) => {
     res.setHeader("Content-Type", "image/png");
     res.send(Buffer.from(data_url.split(",")[1], "base64"));
   } catch (err) {
-    throw err;
+    next(err);
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const { token } = req.query;
     if ((await client.get(token)) !== "new") throw new Error("unavailable");
@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
     await client.set(token, "old");
     res.send({ msg: "succeed", state: 200, data: decodedData });
   } catch (err) {
-    throw err;
+    next(err);
   }
 });
 module.exports = router;
