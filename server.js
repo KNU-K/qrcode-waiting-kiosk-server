@@ -5,8 +5,17 @@ const { conn } = require("./config/mysql");
 const { client } = require("./config/redis");
 const session = require("express-session");
 const passport = require("passport");
-const port = process.env.PORT | 8000;
+const server_http_port = process.env.PORT | 8000;
+const server_https_port = process.env.PORT | 8002;
 const cors = require("cors");
+const https = require("https");
+const fs = require("fs");
+const { ErrorHandler } = require("./middlewares/err-handler");
+
+const options = {
+  key: fs.readFileSync("./config/cert.key"),
+  cert: fs.readFileSync("./config/cert.crt"),
+};
 app.use(cors());
 app.use(
   session({
@@ -22,17 +31,20 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", routers);
+app.use(ErrorHandler);
 
-app.use(errHandelr);
+https.createServer(options, app).listen(server_https_port, () => {
+  console.log("HTTPS server start..!");
+});
 
-app.listen(port, async () => {
+app.listen(server_http_port, async () => {
   try {
     await conn.connect();
     console.log("db conn test succeed");
     await client.connect();
     console.log("redis conn test succeed");
-    console.log(`server open ${port}`);
+    console.log(`server open ${server_http_port}`);
   } catch (err) {
-    console.err(err.message);
+    console.error(err.message);
   }
 });
