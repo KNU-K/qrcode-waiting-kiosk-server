@@ -10,7 +10,9 @@ const server_https_port = process.env.PORT | 8002;
 const cors = require("cors");
 const https = require("https");
 const fs = require("fs");
+const md5 = require("md5");
 const { ErrorHandler } = require("./middlewares/err-handler");
+const { isValidateHandler } = require("./middlewares/validateHandler");
 
 const options = {
   key: fs.readFileSync("./config/cert.key"),

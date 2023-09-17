@@ -1,10 +1,12 @@
 const { client } = require("../config/redis");
+const { validateTokenHandler } = require("../middlewares/err-handler");
+const { isValidateHandler } = require("../middlewares/validateHandler");
 const { ServiceJWT } = require("../services/service.jwt");
 const { ServiceQRCode } = require("../services/service.qr-code");
 
 const router = require("express").Router();
 // TODO: plan implementation
-router.post("/register", async (req, res, next) => {
+router.post("/register", isValidateHandler, async (req, res, next) => {
   try {
     const { productName, productPrice } = req.body;
     const payload = {
@@ -18,13 +20,15 @@ router.post("/register", async (req, res, next) => {
 
     res.send(Buffer.from(data_url.split(",")[1], "base64"));
   } catch (err) {
+    console.log("err");
     next(err);
   }
 });
 
-router.get("/mobile-register", async (req, res, next) => {
+router.get("/mobile-register", isValidateHandler, async (req, res, next) => {
   try {
     const { productName, productPrice } = req.body;
+    if (!productName || !productPrice) throw new Error("invalid info");
     const payload = {
       productName: productName,
       productPrice: productPrice,
@@ -49,6 +53,7 @@ router.get("/", async (req, res, next) => {
     await client.set(token, "old");
     res.send({ msg: "succeed", state: 200, data: decodedData });
   } catch (err) {
+    console.log("err");
     next(err);
   }
 });
