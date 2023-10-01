@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 const { client } = require("../config/redis");
 const { validateTokenHandler } = require("../middlewares/err-handler");
 const { isValidateHandler } = require("../middlewares/validateHandler");
@@ -24,8 +25,7 @@ router.post("/register", isValidateHandler, async (req, res, next) => {
     next(err);
   }
 });
-
-router.get("/mobile-register", isValidateHandler, async (req, res, next) => {
+router.get("/mobile-register/", isValidateHandler, async (req, res, next) => {
   try {
     const { productName, productPrice } = req.body;
     if (!productName || !productPrice) throw new Error("invalid info");

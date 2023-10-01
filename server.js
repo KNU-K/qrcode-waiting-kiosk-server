@@ -33,6 +33,9 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", routers);
+app.post("/callback", (req, res) => {
+  console.log(req.body);
+});
 app.use(ErrorHandler);
 
 https.createServer(options, app).listen(server_https_port, () => {
